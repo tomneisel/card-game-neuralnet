@@ -3,25 +3,22 @@ from game.game_state import GameState
 from game.game_engine import GameEngine
 
 class Environment:
-    def __init__(self, deck_size=32, num_players=4):
+    def __init__(self, players, deck_size=32):
         self.deck_size = deck_size
-        self.num_players = num_players
+        self.players = players
 
         self.rules = Rules()
         self.game_state = GameState()
         self.engine = GameEngine(self.rules, self.game_state)
 
     def reset(self):
-        self.engine.start_game(
-            deck_size=self.deck_size,
-            num_players=self.num_players
-        )
+        self.engine.start_game(players=self.players, deck_size=self.deck_size)
 
         return self.get_observation()
 
     def get_observation(self):
         player_id = self.game_state.current_player
-        player = self.game_state.players[player_id]
+        player = self.game_state.players.get(player_id)
 
         return {
             "current_player": player_id,
@@ -35,7 +32,7 @@ class Environment:
 
     def get_legal_actions(self):
         player_id = self.game_state.current_player
-        player = self.game_state.players[player_id]
+        player = self.game_state.players.get(player_id)
 
         return self.rules.get_legal_actions(self.game_state,player)
 

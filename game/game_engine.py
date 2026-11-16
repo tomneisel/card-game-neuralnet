@@ -10,10 +10,11 @@ class GameEngine:
         self.rules = rules
         self.game_state = game_state
 
-    def start_game(self, deck_size=32, num_players=4):
+    def start_game(self, players, deck_size=32):
 
         #resetting
-        self.game_state.players = []
+        self.game_state.players = {}
+        self.game_state.player_ids = []
         self.game_state.current_trick = []
         self.game_state.last_player = None
         self.game_state.passed_players = []
@@ -21,24 +22,28 @@ class GameEngine:
         self.game_state.game_over = False
         self.game_state.final_ranking = []
 
+        num_players = len(players)
+
         #creating deck
         deck = Deck(deck_size)
         deck.shuffle()
 
         #creating players
-        for i in range(num_players):
-            player = Player(i)
-            self.game_state.players.append(player)
+        for k, v in players.items():
+            player_id = players.get(k).id
+            player = Player(player_id)
+            self.game_state.player_ids.append(player_id)
+            self.game_state.players[player_id] = player
 
         #deal cards to players
         hands = deck.deal(num_players)
 
-        for player, hand in zip(self.game_state.players, hands):
+        for player, hand in zip(self.game_state.players.values(), hands):
             player.hand = hand
 
         #find starting player
         starting_card = Card(Rank.SEVEN, Suit.DIAMONDS)
-        for player in self.game_state.players:
+        for player in self.game_state.players.values():
             if starting_card in player.hand:
                 self.game_state.current_player = player.player_id
                 break
@@ -89,10 +94,10 @@ class GameEngine:
         
     def next_player(self):
         num_players = len(self.game_state.players)
-        current = self.game_state.current_player
+        current = self.game_state.player_ids.index(self.game_state.current_player)
 
         for i in range(1, num_players + 1):
-            next_id = (current + i) % num_players
+            next_id = self.game_state.player_ids[(current + i) % num_players]
 
             if next_id not in self.game_state.finished_players:
                 self.game_state.current_player = next_id
@@ -109,7 +114,7 @@ class GameEngine:
 
         active_opponents = [
             p.player_id
-            for p in self.game_state.players
+            for p in self.game_state.players.values()
             if not p.finished and p.player_id != self.game_state.last_player
         ]
 

@@ -1,6 +1,10 @@
 from game.action import Action
 
 class SimpleAgent:
+    def __init__(self, id):
+        self.id = id
+        
+
     def choose_action(self, observation):
 
         legal_actions: list[Action] = observation["legal_actions"]
