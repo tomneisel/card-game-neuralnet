@@ -14,3 +14,5 @@ class Leaderbord:
 
         for index, (player_id, points) in enumerate(sorted_leaderbord.items()):
             print(f"Place {index + 1}: player {player_id} with {points} points")
+
+        return sorted_leaderbord

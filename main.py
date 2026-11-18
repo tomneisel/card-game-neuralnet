@@ -2,6 +2,7 @@ from game.environment import Environment
 
 from tournament.match_result import MatchResult
 from tournament.leaderbord import Leaderbord
+from tournament.knockout_tournament import KnockoutTournament
 
 from replay.game_logger import GameLogger
 from replay.game_replay import GameReplay
@@ -12,52 +13,32 @@ from agents.simple_agent import SimpleAgent
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def play_game():
-    agents = {
-        1: SimpleAgent(1),
-        2: SimpleAgent(2),
-        3: SimpleAgent(3),
-        4: SimpleAgent(4)
-    }
+def play_tournament():
+    agents = [
+    RandomAgent(5),
+    RandomAgent(6),
+    RandomAgent(7),
+    RandomAgent(8),
+    RandomAgent(9),
+    RandomAgent(10),
+    RandomAgent(11),
+    RandomAgent(12),
+    RandomAgent(13),
+    RandomAgent(14),
+    RandomAgent(15),
+    RandomAgent(16),
+    SimpleAgent(17),
+    SimpleAgent(18),
+    SimpleAgent(19),
+    SimpleAgent(20)
+    ]
 
-    env = Environment(deck_size=32, players=agents)
+    tournament = KnockoutTournament(agents=agents, rounds=2, num_tournaments=100)
 
-    for _ in range(1):
+    tournament.run()
+    final_ranking = tournament.get_ranking()
 
-        observation = env.reset()
-        game_logger.save_initial_state(env.game_state)
-
-        while True:
-            current_player = observation["current_player"]
-
-            agent = agents.get(current_player)
-
-            action = agent.choose_action(observation)
-
-            log_player = current_player
-
-            observation, reward, done, info = env.step(action)
-
-            game_logger.log_action(log_player, env.game_state, action)
-
-            if done:
-                break
-
-        match_result = MatchResult(env.game_state)
-        print(match_result.points)
-        
-        leaderbord.add_result(match_result)
-        game_logger.save_final_ranking(env.game_state.final_ranking)
-
-        print(f"ids: {env.game_state.player_ids}")
+    print(final_ranking)
 
 if __name__ == "__main__":
-    leaderbord = Leaderbord()
-    game_logger = GameLogger()
-
-    play_game()
-
-    leaderbord.get_leaderbord()
-
-    game_replay = GameReplay(game_logger)
-    game_replay.replay()
+    play_tournament()

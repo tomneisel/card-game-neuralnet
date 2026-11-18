@@ -29,8 +29,8 @@ class GameEngine:
         deck.shuffle()
 
         #creating players
-        for k, v in players.items():
-            player_id = players.get(k).id
+        for p in players:
+            player_id = p.id
             player = Player(player_id)
             self.game_state.player_ids.append(player_id)
             self.game_state.players[player_id] = player
