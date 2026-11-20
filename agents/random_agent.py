@@ -4,7 +4,7 @@ class RandomAgent:
     def __init__(self, id):
         self.id = id
 
-    def choose_action(self, observation):
+    def choose_action(self, observation, game_state):
         
         legal_actions = observation["legal_actions"]
 

@@ -62,7 +62,7 @@ class KnockoutTournament:
         while True:
             current_player = observation["current_player"]
             agent = agents_by_id.get(current_player)
-            action = agent.choose_action(observation)
+            action = agent.choose_action(observation, env.game_state)
             observation, reward, done, info = env.step(action)
 
             if done:
