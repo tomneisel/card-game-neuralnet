@@ -5,7 +5,7 @@ class SimpleAgent:
         self.id = id
         
 
-    def choose_action(self, observation, game_state):
+    def choose_action(self, observation):
 
         legal_actions: list[Action] = observation["legal_actions"]
 

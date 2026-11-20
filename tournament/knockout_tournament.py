@@ -7,6 +7,7 @@ from tournament.match_result import MatchResult
 
 from agents.random_agent import RandomAgent
 from agents.simple_agent import SimpleAgent
+from agents.neural_agent import NeuralAgent
 
 class KnockoutTournament:
     def __init__(self, agents, rounds=3, num_players_per_match=4, num_tournaments=20):
@@ -62,7 +63,7 @@ class KnockoutTournament:
         while True:
             current_player = observation["current_player"]
             agent = agents_by_id.get(current_player)
-            action = agent.choose_action(observation, env.game_state)
+            action = agent.choose_action(observation, env.game_state) if isinstance(agent, NeuralAgent) else agent.choose_action(observation)
             observation, reward, done, info = env.step(action)
 
             if done:
